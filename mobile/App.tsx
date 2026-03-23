@@ -1,32 +1,35 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Text, View } from 'react-native';
-import { DemoScreen } from './src/screens/demo-screen';
-import { ProfileScreen } from './src/screens/profile-screen';
-import { SignInScreen } from './src/screens/signin-screen';
-import DemoHooks from './src/screens/demo/demo-hooks';
-import DemoUseContext, { FeatureComponent2 } from './src/screens/demo/demo-usecontext';
-import { AuthProvider } from './src/contexts/auth-context';
-import { HomeScreen } from './src/screens/home-screen';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {ActivityIndicator, View} from 'react-native';
+import {SignInScreen} from './src/screens/signin-screen';
+import {AuthProvider, useAuth} from './src/contexts/auth-context';
 import MainNavigator from './src/screens/navigator/main-navigator';
-import ListScreen from './src/screens/list-screen';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import store from './src/stores/store';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    <AuthProvider>
-      <Provider store={store}>
+    <Provider store={store}>
+      <AuthProvider>
         <AppContent />
-      </Provider>
-    </AuthProvider>
-
+      </AuthProvider>
+    </Provider>
   );
 };
 
 const AppContent: React.FC = () => {
+  const {token, isLoading} = useAuth();
+
+  if (isLoading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -35,16 +38,19 @@ const AppContent: React.FC = () => {
           component={ListScreen}
           options={{ title: 'List Screen' }}
         /> */}
-        <Stack.Screen
-          name="Main"
-          component={MainNavigator}
-          options={{ title: 'ReactNativeStater' }}
-        />
-        <Stack.Screen
-          name="SignIn"
-          component={SignInScreen}
-          options={{ title: 'SignIn Screen' }}
-        />
+        {token ? (
+          <Stack.Screen
+            name="Main"
+            component={MainNavigator}
+            options={{title: 'ReactNativeStater'}}
+          />
+        ) : (
+          <Stack.Screen
+            name="SignIn"
+            component={SignInScreen}
+            options={{title: 'SignIn Screen'}}
+          />
+        )}
         {/* <Stack.Screen
           name="Demo"
           component={DemoUseContext}
@@ -52,7 +58,7 @@ const AppContent: React.FC = () => {
         /> */}
       </Stack.Navigator>
     </NavigationContainer>
-  )
-}
+  );
+};
 
 export default App;

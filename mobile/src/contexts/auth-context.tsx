@@ -1,54 +1,42 @@
-import React, { createContext, useContext, ReactNode, useState } from 'react';
-import { User } from '../models/user';
+import {createContext, useContext, useEffect, useState} from 'react';
+import {authService} from '../services/authService';
 
-interface AuthContextProps {
-    user: User | null;
-    login: (username: string, password: string) => void;
-    logout: () => void;
+interface AuthContextType {
+  token: string | null;
+  isLoading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-interface AuthProviderProps {
-    children: ReactNode;
-}
+export const AuthProvider = ({children}: {children: React.ReactNode}) => {
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // check token lúc app mở
 
-const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
+  // Khi app khởi động → check token cũ còn không
+  useEffect(() => {
+    authService
+      .getToken()
+      .then(t => setToken(t))
+      .finally(() => setIsLoading(false));
+  }, []);
 
-    const login = (username: string, password: string) => {
-        if (username === 'example' && password === 'password') {
-            setUser({ username });
-        } else {
-            console.warn('Invalid credentials');
-        }
-    };
+  const login = async (email: string, password: string) => {
+    const data = await authService.login(email, password);
+    setToken(data.token);
+  };
 
-    const logout = () => {
-        setUser(null);
-    };
+  const logout = async () => {
+    await authService.logout();
+    setToken(null);
+  };
 
-    const contextValue: AuthContextProps = {
-        user,
-        login,
-        logout,
-    };
-
-    return (
-        <AuthContext.Provider value={contextValue}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{token, isLoading, login, logout}}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-const useAuth = (): AuthContextProps => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
-};
-
-export { AuthProvider, useAuth };
-
-
+export const useAuth = () => useContext(AuthContext);
