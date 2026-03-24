@@ -42,7 +42,7 @@ const AppContent: React.FC = () => {
           <Stack.Screen
             name="Main"
             component={MainNavigator}
-            options={{title: 'ReactNativeStater'}}
+            options={{headerShown: false}}
           />
         ) : (
           <Stack.Screen

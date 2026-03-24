@@ -8,7 +8,9 @@ export const authService = {
       password,
     });
     const token = response.data.data.token;
+    const user = response.data.data.user;
     await AsyncStorage.setItem('access_token', token);
+    await AsyncStorage.setItem('user', JSON.stringify(user));
 
     return response.data.data;
   },
@@ -16,9 +18,22 @@ export const authService = {
   async logout() {
     await api.post('/logout');
     await AsyncStorage.removeItem('access_token');
+    await AsyncStorage.removeItem('user');
   },
 
   async getToken() {
     return AsyncStorage.getItem('access_token');
+  },
+
+  async getUser() {
+    const userJson = await AsyncStorage.getItem('user');
+    if (!userJson) {
+      return null;
+    }
+    try {
+      return JSON.parse(userJson);
+    } catch (err) {
+      return null;
+    }
   },
 };
