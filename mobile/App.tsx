@@ -48,7 +48,7 @@ const AppContent: React.FC = () => {
           <Stack.Screen
             name="SignIn"
             component={SignInScreen}
-            options={{title: 'SignIn Screen'}}
+            options={{headerShown: false}}
           />
         )}
         {/* <Stack.Screen
