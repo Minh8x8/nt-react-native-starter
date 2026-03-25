@@ -6,29 +6,24 @@ import {AuthProvider, useAuth} from './src/contexts/auth-context';
 import MainNavigator from './src/screens/navigator/main-navigator';
 import {Provider} from 'react-redux';
 import store from './src/stores/store';
+import {QueryProvider} from './src/providers/QueryProvider';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    <Provider store={store}>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </Provider>
+    <QueryProvider>
+      <Provider store={store}>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </Provider>
+    </QueryProvider>
   );
 };
 
 const AppContent: React.FC = () => {
-  const {token, isLoading} = useAuth();
-
-  if (isLoading) {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+  const {token} = useAuth();
 
   return (
     <NavigationContainer>

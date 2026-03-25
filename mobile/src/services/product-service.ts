@@ -12,6 +12,7 @@ export const productService = {
     const response = await api.get('/product', {
       params: {name: searchQuery, priceUnit: unitPrice},
     });
+    console.log('API Response:', response.data);
     return response.data.data;
   },
 };

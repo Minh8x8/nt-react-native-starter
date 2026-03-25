@@ -11,29 +11,51 @@ import {
   TextInput,
   View,
 } from 'react-native';
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import {useAuth} from '../contexts/auth-context';
 import {Product} from '../models/product';
 import {styles} from './styles/shop-screen-styles';
 import ProductCard from '../components/ProductCard';
-import {selectProductLoading, selectProducts} from '../slices/product-slice';
-import {useAppDispatch, useAppSelector} from '../stores/store';
-import {fetchProducts} from '../thunks/product-thunk';
+import {useProducts} from '../hooks/use-products';
 
 const CATEGORIES = ['All Items', 'Electronics', 'Fashion', 'Home', 'Beauty'];
 
 const ShopScreen: React.FC = () => {
   const {user} = useAuth();
+
   const [activeCategory, setActiveCategory] = useState<string>('All Items');
+
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+
+  // Search states
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>('');
 
-  const dispatch = useAppDispatch();
-  const products = useAppSelector(selectProducts);
-  const loading = useAppSelector(selectProductLoading);
-
+  // Debounce search query
   useEffect(() => {
-    dispatch(fetchProducts({}));
-  }, [dispatch]);
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const {
+    data: products = [],
+    isLoading: loading,
+    isError,
+    refetch,
+  } = useProducts({
+    searchQuery: debouncedSearchQuery,
+  });
+
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setIsRefreshing(false);
+  }, [refetch]);
 
   const renderProductItem = useCallback(({item}: {item: Product}) => {
     return (
@@ -59,9 +81,10 @@ const ShopScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* ── Header ──────────────────────────────────────────────── */}
+      {/* Header */}
       <View style={styles.headerRow}>
         <Text style={styles.headerTitle}>Discover</Text>
+
         <View style={styles.topIcons}>
           <Pressable style={styles.iconBadge}>
             <MaterialCommunityIcons
@@ -70,6 +93,7 @@ const ShopScreen: React.FC = () => {
               color="#1a1a1a"
             />
           </Pressable>
+
           <Pressable style={styles.iconBadge}>
             <MaterialCommunityIcons
               name="cart-outline"
@@ -80,11 +104,12 @@ const ShopScreen: React.FC = () => {
         </View>
       </View>
 
-      {/* ── Search ──────────────────────────────────────────────── */}
+      {/* Search */}
       <View style={styles.searchBox}>
         <MaterialCommunityIcons name="magnify" size={20} color="#9e9e9e" />
+
         <TextInput
-          placeholder="Search products, brands..."
+          placeholder="Search products..."
           placeholderTextColor="#9e9e9e"
           style={styles.searchInput}
           value={searchQuery}
@@ -92,7 +117,7 @@ const ShopScreen: React.FC = () => {
         />
       </View>
 
-      {/* ── Category pills ──────────────────────────────────────── */}
+      {/* Categories */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -118,20 +143,27 @@ const ShopScreen: React.FC = () => {
         ))}
       </ScrollView>
 
-      {/* ── Product grid ────────────────────────────────────────── */}
-      {loading && (
+      {/* Loading */}
+      {loading && !isRefreshing && (
         <View style={styles.loader}>
           <ActivityIndicator size="large" color="#000" />
         </View>
       )}
+
+      {/* Error */}
+      {isError && <Text style={styles.errorText}>Failed to load products</Text>}
+
+      {/* Product Grid */}
       <FlatList
-        data={products} // thêm dòng này
+        data={products}
         keyExtractor={item => item.id.toString()}
         renderItem={renderProductItem}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
         contentContainerStyle={styles.flatListContent}
         showsVerticalScrollIndicator={false}
+        refreshing={isRefreshing}
+        onRefresh={handleRefresh}
       />
     </SafeAreaView>
   );
