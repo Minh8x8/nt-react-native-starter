@@ -93,7 +93,9 @@ export const styles = StyleSheet.create({
 
   // ─── Product grid ──────────────────────────────────────────────
   loader: {
-    marginTop: 40,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   errorText: {
     color: 'red',

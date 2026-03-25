@@ -20,12 +20,12 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // console.log('🚀 REQUEST:');
-    // console.log('URL:', config.baseURL + config.url);
-    // console.log('Method:', config.method);
-    // console.log('Headers:', config.headers);
-    // console.log('Data:', config.data);
-    // console.log('Params:', config.params);
+    console.log('🚀 REQUEST:');
+    console.log('URL:', config.baseURL + config.url);
+    console.log('Method:', config.method);
+    console.log('Headers:', config.headers);
+    console.log('Data:', config.data);
+    console.log('Params:', config.params);
     return config;
   },
   error => Promise.reject(error),
@@ -33,7 +33,13 @@ api.interceptors.request.use(
 
 // ─── Response interceptor ────────────────────────────
 api.interceptors.response.use(
-  response => response,
+  response => {
+    console.log('✅ RESPONSE:');
+    console.log('URL:', response.config.baseURL + response.config.url);
+    console.log('Status:', response.status);
+    console.log('Data:', response.data);
+    return response;
+  },
   async error => {
     const status = error.response?.status;
     // console.log('❌ ERROR RESPONSE');

@@ -1,10 +1,9 @@
 // mobile/src/screens/shop-screen.tsx
 
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   ActivityIndicator,
   FlatList,
-  Image,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -16,6 +15,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useAuth} from '../contexts/auth-context';
 import {Product} from '../models/product';
 import {styles} from './styles/shop-screen-styles';
+import ProductCard from '../components/ProductCard';
+import {selectProductLoading, selectProducts} from '../slices/product-slice';
+import {useAppDispatch, useAppSelector} from '../stores/store';
+import {fetchProducts} from '../thunks/product-thunk';
 
 const CATEGORIES = ['All Items', 'Electronics', 'Fashion', 'Home', 'Beauty'];
 
@@ -24,40 +27,25 @@ const ShopScreen: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>('All Items');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  const dispatch = useAppDispatch();
+  const products = useAppSelector(selectProducts);
+  const loading = useAppSelector(selectProductLoading);
+
+  useEffect(() => {
+    dispatch(fetchProducts({}));
+  }, [dispatch]);
+
   const renderProductItem = useCallback(({item}: {item: Product}) => {
-    const price = `$${item.price.toFixed(2)}`;
-    const isSale = item.id % 5 === 0;
-
     return (
-      <View style={styles.productCard}>
-        <View>
-          <Image source={{uri: item.image}} style={styles.productImage} />
-          {isSale && (
-            <View style={styles.saleBadge}>
-              <Text style={styles.saleLabel}>SALE</Text>
-            </View>
-          )}
-          <Pressable style={styles.heartButton} onPress={() => {}}>
-            <MaterialCommunityIcons
-              name="heart-outline"
-              size={18}
-              color="#ff4d6d"
-            />
-          </Pressable>
-        </View>
-
-        <View style={styles.cardContent}>
-          <Text style={styles.productTitle} numberOfLines={2}>
-            {item.name}
-          </Text>
-          <View style={styles.productFooter}>
-            <Text style={styles.productPrice}>{price}</Text>
-            <Pressable style={styles.addButton} onPress={() => {}}>
-              <MaterialCommunityIcons name="plus" size={18} color="#fff" />
-            </Pressable>
-          </View>
-        </View>
-      </View>
+      <ProductCard
+        product={item}
+        onPressHeart={product => {
+          console.log('Heart:', product.id);
+        }}
+        onPressAdd={product => {
+          console.log('Add:', product.id);
+        }}
+      />
     );
   }, []);
 
@@ -131,20 +119,20 @@ const ShopScreen: React.FC = () => {
       </ScrollView>
 
       {/* ── Product grid ────────────────────────────────────────── */}
-      {/* {loading ? (
-        <ActivityIndicator style={styles.loader} size="large" />
-      ) : error ? (
-        <Text style={styles.errorText}>Error: {error}</Text>
-      ) : (
-        <FlatList
-          keyExtractor={item => item.id.toString()}
-          renderItem={renderProductItem}
-          numColumns={2}
-          columnWrapperStyle={styles.columnWrapper}
-          contentContainerStyle={styles.flatListContent}
-          showsVerticalScrollIndicator={false}
-        />
-      )} */}
+      {loading && (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      )}
+      <FlatList
+        data={products} // thêm dòng này
+        keyExtractor={item => item.id.toString()}
+        renderItem={renderProductItem}
+        numColumns={2}
+        columnWrapperStyle={styles.columnWrapper}
+        contentContainerStyle={styles.flatListContent}
+        showsVerticalScrollIndicator={false}
+      />
     </SafeAreaView>
   );
 };
