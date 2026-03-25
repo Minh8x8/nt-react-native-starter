@@ -1,6 +1,6 @@
 // mobile/src/screens/shop-screen.tsx
 
-import React, {useMemo, useState, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -13,63 +13,25 @@ import {
   View,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import useApiData from '../hooks/use-api-data';
 import {useAuth} from '../contexts/auth-context';
+import {Product} from '../models/product';
 import {styles} from './styles/shop-screen-styles';
-
-type Product = {
-  albumId: number;
-  id: number;
-  title: string;
-  url: string;
-  thumbnailUrl: string;
-};
 
 const CATEGORIES = ['All Items', 'Electronics', 'Fashion', 'Home', 'Beauty'];
 
-const mapAlbumIdToCategory = (albumId: number): string => {
-  if (albumId <= 2) {
-    return 'Electronics';
-  }
-  if (albumId <= 4) {
-    return 'Fashion';
-  }
-  if (albumId <= 6) {
-    return 'Home';
-  }
-  if (albumId <= 8) {
-    return 'Beauty';
-  }
-  return 'All Items';
-};
-
 const ShopScreen: React.FC = () => {
-  const {apiData, loading, error} = useApiData();
   const {user} = useAuth();
   const [activeCategory, setActiveCategory] = useState<string>('All Items');
-
-  const filteredProducts = useMemo(() => {
-    const items = (apiData as Product[]).slice(0, 10);
-    if (activeCategory === 'All Items') {
-      return items;
-    }
-    return items.filter(
-      item => mapAlbumIdToCategory(item.albumId) === activeCategory,
-    );
-  }, [apiData, activeCategory]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const renderProductItem = useCallback(({item}: {item: Product}) => {
-    const category = mapAlbumIdToCategory(item.albumId);
-    const price = `$${((item.id % 100) + 10).toFixed(2)}`;
+    const price = `$${item.price.toFixed(2)}`;
     const isSale = item.id % 5 === 0;
 
     return (
       <View style={styles.productCard}>
         <View>
-          <Image
-            source={{uri: item.thumbnailUrl}}
-            style={styles.productImage}
-          />
+          <Image source={{uri: item.image}} style={styles.productImage} />
           {isSale && (
             <View style={styles.saleBadge}>
               <Text style={styles.saleLabel}>SALE</Text>
@@ -85,9 +47,8 @@ const ShopScreen: React.FC = () => {
         </View>
 
         <View style={styles.cardContent}>
-          <Text style={styles.productCategory}>{category}</Text>
           <Text style={styles.productTitle} numberOfLines={2}>
-            {item.title}
+            {item.name}
           </Text>
           <View style={styles.productFooter}>
             <Text style={styles.productPrice}>{price}</Text>
@@ -138,7 +99,8 @@ const ShopScreen: React.FC = () => {
           placeholder="Search products, brands..."
           placeholderTextColor="#9e9e9e"
           style={styles.searchInput}
-          editable={false}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
       </View>
 
@@ -169,13 +131,12 @@ const ShopScreen: React.FC = () => {
       </ScrollView>
 
       {/* ── Product grid ────────────────────────────────────────── */}
-      {loading ? (
+      {/* {loading ? (
         <ActivityIndicator style={styles.loader} size="large" />
       ) : error ? (
         <Text style={styles.errorText}>Error: {error}</Text>
       ) : (
         <FlatList
-          data={filteredProducts}
           keyExtractor={item => item.id.toString()}
           renderItem={renderProductItem}
           numColumns={2}
@@ -183,7 +144,7 @@ const ShopScreen: React.FC = () => {
           contentContainerStyle={styles.flatListContent}
           showsVerticalScrollIndicator={false}
         />
-      )}
+      )} */}
     </SafeAreaView>
   );
 };
