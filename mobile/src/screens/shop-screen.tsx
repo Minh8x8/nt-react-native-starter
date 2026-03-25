@@ -49,7 +49,7 @@ const ShopScreen: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>('All Items');
 
   const filteredProducts = useMemo(() => {
-    const items = (apiData as Product[]).slice(0, 60);
+    const items = (apiData as Product[]).slice(0, 10);
     if (activeCategory === 'All Items') {
       return items;
     }

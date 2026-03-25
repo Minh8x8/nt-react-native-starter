@@ -36,18 +36,18 @@ export const SignInScreen: FC<ISignInScreen> = ({navigation}) => {
 
   async function onPressSignIn() {
     if (!username.value) {
-      setUsername(prev => ({...prev, error: 'Username không được để trống'}));
+      setUsername(prev => ({...prev, error: 'Username cannot be empty'}));
       return;
     }
     if (!password.value) {
-      setPassword(prev => ({...prev, error: 'Password không được để trống'}));
+      setPassword(prev => ({...prev, error: 'Password cannot be empty'}));
       return;
     }
     try {
       setLoading(true);
       await login(username.value, password.value);
     } catch (err: any) {
-      const message = err.response?.data?.message ?? 'Đăng nhập thất bại';
+      const message = err.response?.data?.message ?? 'Failed to log in';
       setPassword(prev => ({...prev, error: message}));
     } finally {
       setLoading(false);
@@ -55,17 +55,14 @@ export const SignInScreen: FC<ISignInScreen> = ({navigation}) => {
   }
 
   function onPressBiometric() {
-    // TODO: implement biometric login
     console.log('Biometric login — coming soon');
   }
 
   function onPressForgotPassword() {
-    // TODO: implement forgot password
     console.log('Forgot password — coming soon');
   }
 
   function onPressSocialLogin(provider: 'google' | 'facebook') {
-    // TODO: implement social login
     console.log(`${provider} login — coming soon`);
   }
 
