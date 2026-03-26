@@ -116,4 +116,51 @@ export const profileStyles = StyleSheet.create({
     fontWeight: '700',
     color: '#1ac2d6',
   },
+  inputGroup: {
+    marginBottom: 12,
+  },
+  inputLabel: {
+    fontSize: 12,
+    color: '#9aa1af',
+    textTransform: 'uppercase',
+    marginBottom: 6,
+    letterSpacing: 0.4,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 15,
+    color: '#1f1f27',
+    backgroundColor: '#fbfbfd',
+  },
+  inputDisabled: {
+    color: '#9aa1af',
+    backgroundColor: '#f4f6fb',
+  },
+  inputErrorBorder: {
+    borderColor: '#e11d48',
+  },
+  primaryButton: {
+    marginTop: 6,
+    backgroundColor: '#1ac2d6',
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: 'center',
+  },
+  primaryButtonDisabled: {
+    opacity: 0.65,
+  },
+  primaryButtonText: {
+    color: '#ffffff',
+    fontWeight: '700',
+    fontSize: 15,
+  },
+  errorText: {
+    color: '#e11d48',
+    marginTop: 6,
+    fontSize: 13,
+  },
 });

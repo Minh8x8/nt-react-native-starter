@@ -1,6 +1,8 @@
 import {createContext, useContext, useEffect, useState} from 'react';
 import {authService} from '../services/authService';
 import {User} from '../models/user';
+import {profileService} from '../services/profileService';
+import {profileLocalDb} from '../services/profileLocalDb';
 
 interface AuthContextType {
   token: string | null;
@@ -10,6 +12,7 @@ interface AuthContextType {
 
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  setUserProfile: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -52,6 +55,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
     setToken(data.token);
     setUser(data.user);
+    await profileLocalDb.upsertProfile(data.user);
   };
 
   /**
@@ -60,6 +64,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   const logout = async () => {
     try {
       await authService.logout();
+      await profileService.clearLocalProfile();
     } catch (error) {
       console.log('Logout API failed');
     } finally {
@@ -79,6 +84,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
         login,
         logout,
+        setUserProfile: setUser,
       }}>
       {children}
     </AuthContext.Provider>

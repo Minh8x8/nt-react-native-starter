@@ -6,6 +6,7 @@ import MainNavigator from './src/screens/navigator/main-navigator';
 import {Provider} from 'react-redux';
 import store from './src/stores/store';
 import {QueryProvider} from './src/providers/QueryProvider';
+import Toast from 'react-native-toast-message';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ const App = () => {
       <Provider store={store}>
         <AuthProvider>
           <AppContent />
+          <Toast />
         </AuthProvider>
       </Provider>
     </QueryProvider>
