@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  act,
   fireEvent,
   render,
   screen,
@@ -10,6 +11,7 @@ import ProfileScreen from '@/screens/profile/profile-screen';
 import {useAuth} from '@/contexts/auth-context';
 import {profileService} from '@/services/profileService';
 import Toast from 'react-native-toast-message';
+import {RefreshControl} from 'react-native';
 
 jest.mock('@/contexts/auth-context', () => ({
   useAuth: jest.fn(),
@@ -105,5 +107,69 @@ describe('ProfileScreen', () => {
     expect(Toast.show).toHaveBeenCalledWith(
       expect.objectContaining({type: 'success'}),
     );
+  });
+
+  it('logout success flow', async () => {
+    (profileService.getProfile as jest.Mock).mockResolvedValue(baseUser);
+    mockLogout.mockResolvedValue(undefined);
+
+    render(<ProfileScreen navigation={{goBack: jest.fn()}} />);
+
+    await screen.findByText('John');
+
+    fireEvent.press(screen.getByText('Logout'));
+
+    await waitFor(() => expect(mockLogout).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(screen.queryByRole('progressbar')).toBeNull());
+  });
+
+  it('prevents duplicate logout when already logging out', async () => {
+    let resolveLogout: (() => void) | undefined;
+    const logoutPromise = new Promise<void>(res => {
+      resolveLogout = res;
+    });
+    mockLogout.mockReturnValue(logoutPromise);
+
+    render(<ProfileScreen navigation={{goBack: jest.fn()}} />);
+
+    await screen.findByText('John');
+
+    const logoutButton = screen.getByText('Logout');
+
+    fireEvent.press(logoutButton);
+
+    await waitFor(() => expect(mockLogout).toHaveBeenCalledTimes(1));
+
+    fireEvent.press(logoutButton);
+
+    expect(mockLogout).toHaveBeenCalledTimes(1);
+
+    await act(async () => resolveLogout?.());
+    await waitFor(() => expect(screen.queryByRole('progressbar')).toBeNull());
+  });
+
+  it('triggers profile reload on pull-to-refresh', async () => {
+    render(<ProfileScreen navigation={{goBack: jest.fn()}} />);
+
+    await screen.findByText('John Doe');
+
+    const refreshControl = screen.UNSAFE_getByType(RefreshControl);
+
+    await act(async () => {
+      refreshControl.props.onRefresh();
+    });
+
+    expect(profileService.getProfile).toHaveBeenCalledTimes(2);
+  });
+
+  it('calls navigation.goBack when back button is pressed', async () => {
+    const mockGoBack = jest.fn();
+    render(<ProfileScreen navigation={{goBack: mockGoBack}} />);
+
+    await screen.findByText('John Doe');
+
+    fireEvent.press(screen.getByLabelText('icon-chevron-left'));
+
+    expect(mockGoBack).toHaveBeenCalledTimes(1);
   });
 });

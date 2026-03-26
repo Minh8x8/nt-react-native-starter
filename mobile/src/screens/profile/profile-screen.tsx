@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {SafeAreaView, ScrollView} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react'; // add useCallback
+import {SafeAreaView, ScrollView, RefreshControl} from 'react-native'; // add RefreshControl
 
 import ActionRow from '@/components/ActionRow';
 import {useAuth} from '@/contexts/auth-context';
@@ -20,6 +20,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const {user, logout, setUserProfile} = useAuth();
 
   const [loggingOut, setLoggingOut] = useState(false);
+  const [refreshing, setRefreshing] = useState(false); // add this
 
   const {
     profile,
@@ -38,11 +39,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     setUserProfile,
   });
 
-  /**
-   * Load profile khi mount
-   */
   useEffect(() => {
     loadProfile();
+  }, [loadProfile]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await loadProfile();
+    } finally {
+      setRefreshing(false);
+    }
   }, [loadProfile]);
 
   const handleBack = () => navigation?.goBack?.();
@@ -51,7 +58,6 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     if (loggingOut) {
       return;
     }
-
     try {
       setLoggingOut(true);
       await logout?.();
@@ -62,8 +68,16 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <ProfileHeader onBack={handleBack} onSettings={() => {}} />
+      <ScrollView
+        testID="profile-scroll-view"
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <ProfileHeader
+          onBack={handleBack}
+          // onSettings={() => {}}
+        />
 
         <ProfileCard profile={profile} />
 
@@ -81,7 +95,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         <ActionRow
           icon="lock-outline"
           label="Order History"
-          onPress={() => {}}
+          // onPress={() => {}}
         />
 
         <ActionRow

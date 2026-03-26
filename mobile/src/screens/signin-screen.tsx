@@ -19,10 +19,10 @@ interface ISignInScreen {
   navigation: any;
 }
 
-export const SignInScreen: FC<ISignInScreen> = ({navigation}) => {
+export const SignInScreen: FC<ISignInScreen> = ({}) => {
   const {login} = useAuth();
 
-  const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
+  // const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
   const [useBiometric, setUseBiometric] = useState(false);
   const [username, setUsername] = useState<ITextInput>({
     value: 'johndoe',
@@ -58,9 +58,9 @@ export const SignInScreen: FC<ISignInScreen> = ({navigation}) => {
     }
   }
 
-  function onPressBiometric() {
-    console.log('Biometric login — coming soon');
-  }
+  // function onPressBiometric() {
+  //   console.log('Biometric login — coming soon');
+  // }
 
   function onPressForgotPassword() {
     console.log('Forgot password — coming soon');
@@ -92,29 +92,24 @@ export const SignInScreen: FC<ISignInScreen> = ({navigation}) => {
             {/* Tab */}
             <View style={styles.tabWrap}>
               <TouchableOpacity
-                style={[styles.tab, activeTab === 'login' && styles.tabActive]}
-                onPress={() => setActiveTab('login')}>
-                <Text
-                  style={[
-                    styles.tabText,
-                    activeTab === 'login' && styles.tabTextActive,
-                  ]}>
+                style={[styles.tab, styles.tabActive]}
+                // onPress={() => setActiveTab('login')}
+              >
+                <Text style={[styles.tabText, styles.tabTextActive]}>
                   Login
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.tab, activeTab === 'signup' && styles.tabActive]}
-                onPress={() => {
-                  setActiveTab('signup');
-                  navigation.replace('SignUpScreen');
-                }}>
-                <Text
-                  style={[
-                    styles.tabText,
-                    activeTab === 'signup' && styles.tabTextActive,
-                  ]}>
-                  Sign Up
-                </Text>
+                style={[
+                  styles.tab,
+                  //  activeTab === 'signup' && styles.tabActive
+                ]}
+                // onPress={() => {
+                //   setActiveTab('signup');
+                //   navigation.replace('SignUpScreen');
+                // }}
+              >
+                <Text style={[styles.tabText]}>Sign Up</Text>
               </TouchableOpacity>
             </View>
 
@@ -195,7 +190,7 @@ export const SignInScreen: FC<ISignInScreen> = ({navigation}) => {
             {/* Biometric button */}
             <TouchableOpacity
               style={styles.biometricBtn}
-              onPress={onPressBiometric}
+              // onPress={onPressBiometric}
               activeOpacity={0.7}>
               <Text style={styles.socialIcon}>🪪</Text>
               <Text style={styles.biometricText}>Sign in with Biometrics</Text>

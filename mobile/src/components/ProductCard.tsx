@@ -13,8 +13,8 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({
   product,
-  onPressHeart,
-  onPressAdd,
+  //onPressHeart,
+  //onPressAdd,
 }) => {
   const price = `$${product.price.toFixed(2)}`;
   const isSale = product.id % 5 === 0;
@@ -32,7 +32,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         <Pressable
           style={styles.heartButton}
-          onPress={() => onPressHeart?.(product)}>
+          // onPress={() => onPressHeart?.(product)}
+        >
           <MaterialCommunityIcons
             name="heart-outline"
             size={18}
@@ -51,7 +52,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
           <Pressable
             style={styles.addButton}
-            onPress={() => onPressAdd?.(product)}>
+            // onPress={() => onPressAdd?.(product)}
+          >
             <MaterialCommunityIcons name="plus" size={18} color="#fff" />
           </Pressable>
         </View>

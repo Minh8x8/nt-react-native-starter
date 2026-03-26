@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-  render,
   fireEvent,
-  waitFor,
+  render,
   screen,
+  waitFor,
 } from '@testing-library/react-native';
-import '@testing-library/jest-native/extend-expect';
+
 import {SignInScreen} from '@/screens/signin-screen';
 import {useAuth} from '@/contexts/auth-context';
 
@@ -13,56 +13,100 @@ jest.mock('@/contexts/auth-context', () => ({
   useAuth: jest.fn(),
 }));
 
-const mockLogin = jest.fn();
-const mockNavigation = {replace: jest.fn()};
-
 describe('SignInScreen', () => {
+  const login = jest.fn();
+  const navigation = {replace: jest.fn()};
+  let consoleSpy: jest.SpyInstance;
+
   beforeEach(() => {
     jest.clearAllMocks();
-    (useAuth as jest.Mock).mockReturnValue({login: mockLogin});
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    (useAuth as jest.Mock).mockReturnValue({login});
   });
 
-  it('renders heading and primary actions', () => {
-    render(<SignInScreen navigation={mockNavigation} />);
+  afterEach(() => {
+    consoleSpy.mockRestore();
+  });
 
-    expect(screen.getByText('Welcome Back')).toBeTruthy();
-    expect(screen.getByText('Sign In')).toBeTruthy();
-    expect(screen.getByText('Login')).toBeTruthy();
-    expect(screen.getByText('Sign Up')).toBeTruthy();
+  it('triggers forgot password handler on press', () => {
+    render(<SignInScreen navigation={navigation} />);
+
+    fireEvent.press(screen.getByText('Forgot Password?'));
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Forgot password'),
+    );
+  });
+
+  it('logs presses on social login buttons (Google, Facebook)', () => {
+    render(<SignInScreen navigation={navigation} />);
+
+    fireEvent.press(screen.getByText('Google'));
+    fireEvent.press(screen.getByText('Facebook'));
+
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('google'));
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('facebook'),
+    );
   });
 
   it('shows validation errors when username and password are empty', async () => {
-    render(<SignInScreen navigation={mockNavigation} />);
+    render(<SignInScreen navigation={navigation} />);
 
-    const usernameInput = screen.getByPlaceholderText('johndoe123');
-    const passwordInput = screen.getByPlaceholderText(/•/);
+    // Clear default values
+    fireEvent.changeText(screen.getByPlaceholderText('johndoe123'), '');
+    fireEvent.changeText(screen.getByPlaceholderText('••••••••'), '');
 
-    fireEvent.changeText(usernameInput, '');
-    fireEvent.changeText(passwordInput, '');
     fireEvent.press(screen.getByText('Sign In'));
 
     expect(await screen.findByText('Username cannot be empty')).toBeTruthy();
-    expect(await screen.findByText('Password cannot be empty')).toBeTruthy();
-    expect(mockLogin).not.toHaveBeenCalled();
+    expect(screen.getByText('Password cannot be empty')).toBeTruthy();
+    expect(login).not.toHaveBeenCalled();
   });
 
-  it('shows API error when login fails', async () => {
-    mockLogin.mockRejectedValueOnce({
-      response: {data: {message: 'Invalid credentials'}},
-    });
+  it('calls login with username and password on valid submit', async () => {
+    login.mockResolvedValue(undefined);
+    render(<SignInScreen navigation={navigation} />);
 
-    render(<SignInScreen navigation={mockNavigation} />);
-
-    const usernameInput = screen.getByPlaceholderText('johndoe123');
-    const passwordInput = screen.getByPlaceholderText(/•/);
-    fireEvent.changeText(usernameInput, 'demo');
-    fireEvent.changeText(passwordInput, 'secret');
+    fireEvent.changeText(screen.getByPlaceholderText('johndoe123'), 'jdoe');
+    fireEvent.changeText(screen.getByPlaceholderText('••••••••'), 'pass123');
 
     fireEvent.press(screen.getByText('Sign In'));
 
     await waitFor(() => {
-      expect(screen.getByText('Invalid credentials')).toBeTruthy();
+      expect(login).toHaveBeenCalledWith('jdoe', 'pass123');
     });
-    expect(mockLogin).toHaveBeenCalledWith('demo', 'secret');
+  });
+
+  it('shows API error message on login failure', async () => {
+    login.mockRejectedValue({
+      response: {data: {message: 'Invalid credentials'}},
+    });
+    render(<SignInScreen navigation={navigation} />);
+
+    fireEvent.press(screen.getByText('Sign In'));
+
+    expect(await screen.findByText('Invalid credentials')).toBeTruthy();
+  });
+
+  it('shows fallback error message when API response has no message', async () => {
+    login.mockRejectedValue(new Error('Network error'));
+    render(<SignInScreen navigation={navigation} />);
+
+    fireEvent.press(screen.getByText('Sign In'));
+
+    expect(await screen.findByText('Failed to log in')).toBeTruthy();
+  });
+
+  it('toggles biometric checkbox on press', () => {
+    render(<SignInScreen navigation={navigation} />);
+
+    expect(screen.queryByText('✓')).toBeNull();
+
+    fireEvent.press(screen.getByText('Use biometrics for faster login'));
+    expect(screen.getByText('✓')).toBeTruthy();
+
+    fireEvent.press(screen.getByText('Use biometrics for faster login'));
+    expect(screen.queryByText('✓')).toBeNull();
   });
 });

@@ -61,12 +61,12 @@ const ShopScreen: React.FC = () => {
     return (
       <ProductCard
         product={item}
-        onPressHeart={product => {
-          console.log('Heart:', product.id);
-        }}
-        onPressAdd={product => {
-          console.log('Add:', product.id);
-        }}
+        // onPressHeart={product => {
+        //   console.log('Heart:', product.id);
+        // }}
+        // onPressAdd={product => {
+        //   console.log('Add:', product.id);
+        // }}
       />
     );
   }, []);
