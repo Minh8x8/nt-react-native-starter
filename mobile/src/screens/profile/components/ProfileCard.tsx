@@ -1,8 +1,8 @@
 import React from 'react';
 import {Image, Text, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {profileStyles as styles} from './styles';
-import {User} from '../../models/user';
+import {profileStyles as styles} from '../styles';
+import {User} from '../../../models/user';
 
 interface ProfileCardProps {
   profile: User | null;

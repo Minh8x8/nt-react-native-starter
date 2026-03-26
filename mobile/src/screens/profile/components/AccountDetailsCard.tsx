@@ -8,9 +8,9 @@ import {
   View,
 } from 'react-native';
 import {Controller, FieldErrors, Control} from 'react-hook-form';
-import DetailField from '../../components/DetailField';
-import {profileStyles as styles} from './styles';
-import {User} from '../../models/user';
+import DetailField from '../../../components/DetailField';
+import {profileStyles as styles} from '../styles';
+import {User} from '../../../models/user';
 
 type FormValues = {
   firstName: string;

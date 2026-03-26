@@ -1,65 +1,51 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView} from 'react-native';
+
 import ActionRow from '../../components/ActionRow';
 import {useAuth} from '../../contexts/auth-context';
-import AccountDetailsCard from './AccountDetailsCard';
-import ProfileCard from './ProfileCard';
-import ProfileHeader from './ProfileHeader';
+
+import AccountDetailsCard from './components/AccountDetailsCard';
+import ProfileCard from './components/ProfileCard';
+import ProfileHeader from './components/ProfileHeader';
+
 import {profileStyles as styles} from './styles';
-import {profileService} from '../../services/profileService';
-import {User} from '../../models/user';
-import {useForm} from 'react-hook-form';
-import {yupResolver} from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import Toast from 'react-native-toast-message';
+
+import {useProfileForm} from './hooks/useProfileForm';
 
 interface ProfileScreenProps {
   navigation: any;
 }
 
-const profileSchema = yup.object({
-  firstName: yup.string().trim().required('First name is required'),
-  lastName: yup.string().trim().required('Last name is required'),
-  age: yup
-    .number()
-    .transform((value, originalValue) =>
-      originalValue === '' ? undefined : Number(originalValue),
-    )
-    .typeError('Age must be a number')
-    .required('Age is required')
-    .integer('Age must be an integer')
-    .min(0, 'Age must be non-negative'),
-});
-
 const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
   const {user, logout, setUserProfile} = useAuth();
-  const [profile, setProfile] = useState<User | null>(user);
+
   const [loggingOut, setLoggingOut] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [, setLoadingProfile] = useState(false);
-  const [savingProfile, setSavingProfile] = useState(false);
+
   const {
+    profile,
+    isEditing,
+    savingProfile,
+
     control,
-    reset,
-    handleSubmit,
-    formState: {errors},
-  } = useForm<{
-    firstName: string;
-    lastName: string;
-    age: number;
-  }>({
-    resolver: yupResolver(profileSchema),
-    defaultValues: {
-      firstName: user?.firstName ?? '',
-      lastName: user?.lastName ?? '',
-      age: user?.age ?? 0,
-    },
+    errors,
+
+    setIsEditing,
+    onSave,
+    onCancel,
+    loadProfile,
+  } = useProfileForm({
+    user,
+    setUserProfile,
   });
 
+  /**
+   * Load profile khi mount
+   */
+  useEffect(() => {
+    loadProfile();
+  }, [loadProfile]);
+
   const handleBack = () => navigation?.goBack?.();
-  const handleSettings = () => {};
-  const handleEdit = () => setIsEditing(true);
-  const handleOrderHistory = () => {};
 
   const handleLogout = async () => {
     if (loggingOut) {
@@ -74,118 +60,28 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     }
   };
 
-  useEffect(() => {
-    if (!user) {
-      return;
-    }
-    reset({
-      firstName: user.firstName ?? '',
-      lastName: user.lastName ?? '',
-      age: user.age ?? 0,
-    });
-    setProfile(user);
-  }, [user, reset]);
-
-  const loadProfile = useCallback(async () => {
-    setLoadingProfile(true);
-    try {
-      const cached = await profileService.getLocalProfile();
-      if (cached) {
-        setProfile(cached);
-        setUserProfile(cached);
-        reset({
-          firstName: cached.firstName ?? '',
-          lastName: cached.lastName ?? '',
-          age: cached.age ?? 0,
-        });
-      }
-
-      const fresh = await profileService.getProfile();
-      setProfile(fresh);
-      setUserProfile(fresh);
-      reset({
-        firstName: fresh.firstName ?? '',
-        lastName: fresh.lastName ?? '',
-        age: fresh.age ?? 0,
-      });
-    } catch (error) {
-      console.log('Failed to load profile', error);
-    } finally {
-      setLoadingProfile(false);
-    }
-  }, [setUserProfile, reset]);
-
-  useEffect(() => {
-    loadProfile();
-  }, [loadProfile]);
-
-  const handleSaveProfile = handleSubmit(async values => {
-    if (savingProfile) {
-      return;
-    }
-
-    setSavingProfile(true);
-    try {
-      const updated = await profileService.updateProfile({
-        firstName: values.firstName.trim(),
-        lastName: values.lastName.trim(),
-        age: Number(values.age),
-      });
-      setProfile(updated);
-      setUserProfile(updated);
-      reset({
-        firstName: updated.firstName ?? '',
-        lastName: updated.lastName ?? '',
-        age: updated.age ?? 0,
-      });
-      setIsEditing(false);
-      Toast.show({
-        type: 'success',
-        text1: 'Profile updated',
-        text2: 'Your changes have been saved.',
-      });
-    } catch (error: any) {
-      const message =
-        error?.response?.data?.message ?? 'Failed to update profile';
-      Toast.show({
-        type: 'error',
-        text1: 'Update failed',
-        text2: message,
-      });
-    } finally {
-      setSavingProfile(false);
-    }
-  });
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content}>
-        <ProfileHeader onBack={handleBack} onSettings={handleSettings} />
+        <ProfileHeader onBack={handleBack} onSettings={() => {}} />
 
         <ProfileCard profile={profile} />
 
         <AccountDetailsCard
           profile={profile}
-          onEdit={handleEdit}
+          onEdit={() => setIsEditing(true)}
           isEditing={isEditing}
           control={control}
           errors={errors}
-          onSave={handleSaveProfile}
-          onCancel={() => {
-            reset({
-              firstName: profile?.firstName ?? '',
-              lastName: profile?.lastName ?? '',
-              age: profile?.age ?? 0,
-            });
-            setIsEditing(false);
-          }}
+          onSave={onSave}
+          onCancel={onCancel}
           saving={savingProfile}
         />
 
         <ActionRow
           icon="lock-outline"
           label="Order History"
-          onPress={handleOrderHistory}
+          onPress={() => {}}
         />
 
         <ActionRow

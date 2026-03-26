@@ -1,7 +1,7 @@
 import React from 'react';
 import {Pressable, Text, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {profileStyles as styles} from './styles';
+import {profileStyles as styles} from '../styles';
 
 interface HeaderProps {
   onBack?: () => void;
