@@ -1,6 +1,5 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {ActivityIndicator, View} from 'react-native';
 import {SignInScreen} from './src/screens/signin-screen';
 import {AuthProvider, useAuth} from './src/contexts/auth-context';
 import MainNavigator from './src/screens/navigator/main-navigator';

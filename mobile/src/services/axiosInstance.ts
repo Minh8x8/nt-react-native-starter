@@ -42,14 +42,14 @@ api.interceptors.response.use(
   },
   async error => {
     const status = error.response?.status;
-    // console.log('❌ ERROR RESPONSE');
-    // if (error.response) {
-    //   console.log('URL:', error.config?.url);
-    //   console.log('Status:', error.response.status);
-    //   console.log('Data:', error.response.data);
-    // } else {
-    //   console.log('Error message:', error.message);
-    // }
+    console.log('❌ ERROR RESPONSE');
+    if (error.response) {
+      console.log('URL:', error.config?.url);
+      console.log('Status:', error.response.status);
+      console.log('Data:', error.response.data);
+    } else {
+      console.log('Error message:', error.message);
+    }
     if (status === 401) {
       // Token hết hạn → xóa token, về màn Login
       await AsyncStorage.removeItem('access_token');

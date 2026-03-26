@@ -2,10 +2,10 @@ import React from 'react';
 import {Pressable, Text, View} from 'react-native';
 import DetailField from '../../components/DetailField';
 import {profileStyles as styles} from './styles';
-import {Profile} from './types';
+import {User} from '../../models/user';
 
 interface AccountDetailsCardProps {
-  profile: Profile;
+  profile: User | null;
   onEdit?: () => void;
 }
 
@@ -21,10 +21,10 @@ const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
       </Pressable>
     </View>
 
-    <DetailField label="Email Address" value={profile.email} />
-    <DetailField label="First Name" value={profile.firstName} />
-    <DetailField label="Last Name" value={profile.lastName} />
-    <DetailField label="Age" value={String(profile.age)} isLast />
+    <DetailField label="Email Address" value={profile!.email} />
+    <DetailField label="First Name" value={profile!.firstName} />
+    <DetailField label="Last Name" value={profile!.lastName} />
+    <DetailField label="Age" value={String(profile!.age)} isLast />
   </View>
 );
 

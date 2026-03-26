@@ -1,17 +1,6 @@
 import {createContext, useContext, useEffect, useState} from 'react';
 import {authService} from '../services/authService';
-
-export interface User {
-  id: number;
-  username: string;
-  email: string;
-  age: number;
-  role: string;
-  firstName: string;
-  lastName: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import {User} from '../models/user';
 
 interface AuthContextType {
   token: string | null;
