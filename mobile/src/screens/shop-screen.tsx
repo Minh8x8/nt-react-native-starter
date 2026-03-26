@@ -145,7 +145,7 @@ const ShopScreen: React.FC = () => {
 
       {/* Loading */}
       {loading && !isRefreshing && (
-        <View style={styles.loader}>
+        <View style={styles.loader} testID="products-loader">
           <ActivityIndicator size="large" color="#000" />
         </View>
       )}

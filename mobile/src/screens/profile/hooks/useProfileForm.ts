@@ -66,37 +66,21 @@ export const useProfileForm = ({
     setLoadingProfile(true);
 
     try {
-      // Load local first
       const cached = await profileService.getLocalProfile();
-
       if (cached) {
         setProfile(cached);
         setUserProfile?.(cached);
-
-        reset({
-          firstName: cached.firstName ?? '',
-          lastName: cached.lastName ?? '',
-          age: cached.age ?? 0,
-        });
       }
 
-      // Load fresh từ backend
       const fresh = await profileService.getProfile();
-
       setProfile(fresh);
       setUserProfile?.(fresh);
-
-      reset({
-        firstName: fresh.firstName ?? '',
-        lastName: fresh.lastName ?? '',
-        age: fresh.age ?? 0,
-      });
     } catch (error) {
       console.log('Failed to load profile', error);
     } finally {
       setLoadingProfile(false);
     }
-  }, [reset, setUserProfile]);
+  }, [setUserProfile]);
 
   /**
    * Save profile

@@ -35,12 +35,16 @@ export const SignInScreen: FC<ISignInScreen> = ({navigation}) => {
   const [loading, setLoading] = useState(false);
 
   async function onPressSignIn() {
+    let hasError = false;
     if (!username.value) {
       setUsername(prev => ({...prev, error: 'Username cannot be empty'}));
-      return;
+      hasError = true;
     }
     if (!password.value) {
       setPassword(prev => ({...prev, error: 'Password cannot be empty'}));
+      hasError = true;
+    }
+    if (hasError) {
       return;
     }
     try {
