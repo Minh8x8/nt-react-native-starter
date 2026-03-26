@@ -18,11 +18,13 @@ interface ProfileScreenProps {
 }
 
 const profileSchema = yup.object({
-  email: yup.string().email().required(),
   firstName: yup.string().trim().required('First name is required'),
   lastName: yup.string().trim().required('Last name is required'),
   age: yup
     .number()
+    .transform((value, originalValue) =>
+      originalValue === '' ? undefined : Number(originalValue),
+    )
     .typeError('Age must be a number')
     .required('Age is required')
     .integer('Age must be an integer')
@@ -42,17 +44,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     handleSubmit,
     formState: {errors},
   } = useForm<{
-    email: string;
     firstName: string;
     lastName: string;
-    age: string;
+    age: number;
   }>({
     resolver: yupResolver(profileSchema),
     defaultValues: {
-      email: user?.email ?? '',
       firstName: user?.firstName ?? '',
       lastName: user?.lastName ?? '',
-      age: user?.age?.toString() ?? '',
+      age: user?.age ?? 0,
     },
   });
 
@@ -79,10 +79,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       return;
     }
     reset({
-      email: user.email ?? '',
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
-      age: user.age?.toString() ?? '',
+      age: user.age ?? 0,
     });
     setProfile(user);
   }, [user, reset]);
@@ -95,10 +94,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
         setProfile(cached);
         setUserProfile(cached);
         reset({
-          email: cached.email ?? '',
           firstName: cached.firstName ?? '',
           lastName: cached.lastName ?? '',
-          age: cached.age?.toString() ?? '',
+          age: cached.age ?? 0,
         });
       }
 
@@ -106,10 +104,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       setProfile(fresh);
       setUserProfile(fresh);
       reset({
-        email: fresh.email ?? '',
         firstName: fresh.firstName ?? '',
         lastName: fresh.lastName ?? '',
-        age: fresh.age?.toString() ?? '',
+        age: fresh.age ?? 0,
       });
     } catch (error) {
       console.log('Failed to load profile', error);
@@ -137,10 +134,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
       setProfile(updated);
       setUserProfile(updated);
       reset({
-        email: updated.email ?? '',
         firstName: updated.firstName ?? '',
         lastName: updated.lastName ?? '',
-        age: updated.age?.toString() ?? '',
+        age: updated.age ?? 0,
       });
       setIsEditing(false);
       Toast.show({
@@ -177,10 +173,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
           onSave={handleSaveProfile}
           onCancel={() => {
             reset({
-              email: profile?.email ?? '',
               firstName: profile?.firstName ?? '',
               lastName: profile?.lastName ?? '',
-              age: profile?.age?.toString() ?? '',
+              age: profile?.age ?? 0,
             });
             setIsEditing(false);
           }}

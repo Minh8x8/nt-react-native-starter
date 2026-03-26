@@ -13,10 +13,9 @@ import {profileStyles as styles} from './styles';
 import {User} from '../../models/user';
 
 type FormValues = {
-  email: string;
   firstName: string;
   lastName: string;
-  age: string;
+  age: number;
 };
 
 interface AccountDetailsCardProps {
@@ -65,17 +64,11 @@ const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
       <>
         <View style={styles.inputGroup}>
           <Text style={styles.inputLabel}>Email Address</Text>
-          <Controller
-            control={control}
-            name="email"
-            render={({field: {value}}) => (
-              <TextInput
-                value={value}
-                editable={false}
-                style={[styles.input, styles.inputDisabled]}
-                placeholder="Email"
-              />
-            )}
+          <TextInput
+            value={profile?.email ?? ''}
+            editable={false}
+            style={[styles.input, styles.inputDisabled]}
+            placeholder="Email"
           />
         </View>
 
@@ -132,14 +125,14 @@ const AccountDetailsCard: React.FC<AccountDetailsCardProps> = ({
             name="age"
             render={({field: {onChange, value}}) => (
               <TextInput
-                value={value}
+                keyboardType="numeric"
+                value={value?.toString()}
                 onChangeText={onChange}
                 style={[
                   styles.input,
                   errors.age ? styles.inputErrorBorder : null,
                 ]}
                 placeholder="Age"
-                keyboardType="numeric"
               />
             )}
           />
