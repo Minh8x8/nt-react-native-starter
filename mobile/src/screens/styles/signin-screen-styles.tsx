@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet} from 'react-native';
-import {Colors} from '../../config/colors';
+import {Colors} from '@/config/colors';
 
 const {width} = Dimensions.get('window');
 const isSmallPhone = width < 390; // iPhone SE, iPhone 12 mini

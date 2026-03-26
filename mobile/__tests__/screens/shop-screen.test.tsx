@@ -1,9 +1,9 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react-native';
 import '@testing-library/jest-native/extend-expect';
-import ShopScreen from '../../src/screens/shop-screen';
-import {useAuth} from '../../src/contexts/auth-context';
-import {useProducts} from '../../src/hooks/use-products';
+import ShopScreen from '@/screens/shop-screen';
+import {useAuth} from '@/contexts/auth-context';
+import {useProducts} from '@/hooks/use-products';
 
 jest.mock('@/contexts/auth-context', () => ({
   useAuth: jest.fn(),

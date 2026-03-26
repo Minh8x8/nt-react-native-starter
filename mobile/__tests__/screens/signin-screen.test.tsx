@@ -6,8 +6,8 @@ import {
   screen,
 } from '@testing-library/react-native';
 import '@testing-library/jest-native/extend-expect';
-import {SignInScreen} from '../../src/screens/signin-screen';
-import {useAuth} from '../../src/contexts/auth-context';
+import {SignInScreen} from '@/screens/signin-screen';
+import {useAuth} from '@/contexts/auth-context';
 
 jest.mock('@/contexts/auth-context', () => ({
   useAuth: jest.fn(),

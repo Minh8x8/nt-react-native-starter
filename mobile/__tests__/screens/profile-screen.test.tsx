@@ -6,16 +6,16 @@ import {
   waitFor,
 } from '@testing-library/react-native';
 import '@testing-library/jest-native/extend-expect';
-import ProfileScreen from '../../src/screens/profile/profile-screen';
-import {useAuth} from '../../src/contexts/auth-context';
-import {profileService} from '../../src/services/profileService';
+import ProfileScreen from '@/screens/profile/profile-screen';
+import {useAuth} from '@/contexts/auth-context';
+import {profileService} from '@/services/profileService';
 import Toast from 'react-native-toast-message';
 
-jest.mock('../../src/contexts/auth-context', () => ({
+jest.mock('@/contexts/auth-context', () => ({
   useAuth: jest.fn(),
 }));
 
-jest.mock('../../src/services/profileService', () => ({
+jest.mock('@/services/profileService', () => ({
   profileService: {
     getLocalProfile: jest.fn(),
     getProfile: jest.fn(),

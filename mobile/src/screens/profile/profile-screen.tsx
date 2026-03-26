@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView} from 'react-native';
 
-import ActionRow from '../../components/ActionRow';
-import {useAuth} from '../../contexts/auth-context';
+import ActionRow from '@/components/ActionRow';
+import {useAuth} from '@/contexts/auth-context';
 
 import AccountDetailsCard from './components/AccountDetailsCard';
 import ProfileCard from './components/ProfileCard';

@@ -5,8 +5,8 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import Toast from 'react-native-toast-message';
 
 import {profileSchema} from '../validations/profileSchema';
-import {profileService} from '../../../services/profileService';
-import {User} from '../../../models/user';
+import {profileService} from '@/services/profileService';
+import {User} from '@/models/user';
 
 type FormValues = {
   firstName: string;
