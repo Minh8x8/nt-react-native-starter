@@ -8,12 +8,12 @@ import {
 } from '@testing-library/react-native';
 import '@testing-library/jest-native/extend-expect';
 import ProfileScreen from '@/screens/profile/profile-screen';
-import {useAuth} from '@/contexts/auth-context';
+import {useAuth} from '@/providers/auth-provider';
 import {profileService} from '@/services/profileService';
 import Toast from 'react-native-toast-message';
 import {RefreshControl} from 'react-native';
 
-jest.mock('@/contexts/auth-context', () => ({
+jest.mock('@/providers/auth-provider', () => ({
   useAuth: jest.fn(),
 }));
 

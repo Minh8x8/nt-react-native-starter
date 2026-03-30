@@ -2,7 +2,7 @@ import {act, renderHook, waitFor} from '@testing-library/react-native';
 
 import {useProfileForm} from '@/screens/profile/hooks/useProfileForm';
 import {profileService} from '@/services/profileService';
-import {User} from '@/models/user';
+import {User} from '@/types/user';
 
 var mockToastShow = jest.fn();
 

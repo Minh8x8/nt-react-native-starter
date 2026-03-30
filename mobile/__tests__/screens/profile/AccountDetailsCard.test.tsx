@@ -4,7 +4,7 @@ import {render, screen} from '@testing-library/react-native';
 import {useForm} from 'react-hook-form';
 
 import AccountDetailsCard from '@/screens/profile/components/AccountDetailsCard';
-import {User} from '@/models/user';
+import {User} from '@/types/user';
 
 type FormValues = {
   firstName: string;

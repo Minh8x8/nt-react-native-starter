@@ -7,9 +7,9 @@ import {
 } from '@testing-library/react-native';
 
 import {SignInScreen} from '@/screens/sign-in/signin-screen';
-import {useAuth} from '@/contexts/auth-context';
+import {useAuth} from '@/providers/auth-provider';
 
-jest.mock('@/contexts/auth-context', () => ({
+jest.mock('@/providers/auth-provider', () => ({
   useAuth: jest.fn(),
 }));
 
