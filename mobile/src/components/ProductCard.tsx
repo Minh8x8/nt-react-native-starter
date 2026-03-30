@@ -3,7 +3,7 @@ import {View, Text, Image, Pressable} from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Product} from '../models/product';
-import {styles} from '../screens/styles/shop-screen-styles';
+import {styles} from '../screens/shop/styles';
 
 interface ProductCardProps {
   product: Product;

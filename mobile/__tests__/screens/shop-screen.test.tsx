@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react-native';
 import '@testing-library/jest-native/extend-expect';
-import ShopScreen from '@/screens/shop-screen';
+import ShopScreen from '@/screens/shop/shop-screen';
 import {useAuth} from '@/contexts/auth-context';
 import {useProducts} from '@/hooks/use-products';
 
