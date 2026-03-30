@@ -1,7 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SignInScreen} from '@/screens/sign-in/signin-screen';
-import {AuthProvider, useAuth} from './src/providers/auth-provider';
+import {AuthProvider, useAuth} from './src/providers/AuthProvider';
 import MainNavigator from './src/screens/navigator/main-navigator';
 import {Provider} from 'react-redux';
 import store from './src/store/store';
