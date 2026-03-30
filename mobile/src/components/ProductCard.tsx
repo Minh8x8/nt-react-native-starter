@@ -34,6 +34,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         <Pressable
           style={styles.heartButton}
+          testID={`heart-${product.id}`}
           onPress={() => onPressHeart?.(product)}>
           <MaterialCommunityIcons
             name={isSaved ? 'heart' : 'heart-outline'}
@@ -53,6 +54,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
           <Pressable
             style={styles.addButton}
+            testID={`add-${product.id}`}
             onPress={() => onPressAdd?.(product)}>
             <MaterialCommunityIcons name="plus" size={18} color="#fff" />
           </Pressable>

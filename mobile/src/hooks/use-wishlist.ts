@@ -1,4 +1,4 @@
-import {useEffect, useMemo} from 'react';
+import {useEffect, useMemo, useCallback} from 'react';
 import Toast from 'react-native-toast-message';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -24,24 +24,33 @@ export const useWishlist = (userId?: number) => {
     }
   }, [dispatch, userId]);
 
-  const toggle = (product: Product) => {
-    if (!userId) {
-      Toast.show({
-        type: 'info',
-        text1: 'Please sign in to save items',
-      });
-      return;
-    }
-    dispatch(toggleWishlist({userId, product}))
-      .unwrap()
-      .then(result => {
+  const toggle = useCallback(
+    (product: Product) => {
+      if (!userId) {
         Toast.show({
-          type: 'success',
-          text1: result.saved ? 'Saved to wishlist' : 'Removed from wishlist',
-          text2: product.name,
+          type: 'info',
+          text1: 'Please sign in to save items',
         });
-      });
-  };
+        return;
+      }
+      dispatch(toggleWishlist({userId, product}))
+        .unwrap()
+        .then(result => {
+          Toast.show({
+            type: 'success',
+            text1: result.saved ? 'Saved to wishlist' : 'Removed from wishlist',
+            text2: product.name,
+          });
+        });
+    },
+    [dispatch, userId],
+  );
+
+  const refresh = useCallback(() => {
+    if (userId) {
+      dispatch(loadWishlist(userId));
+    }
+  }, [dispatch, userId]);
 
   return useMemo(
     () => ({
@@ -49,8 +58,8 @@ export const useWishlist = (userId?: number) => {
       wishlistIds,
       loading,
       toggleWishlist: toggle,
-      refresh: () => userId && dispatch(loadWishlist(userId)),
+      refresh,
     }),
-    [wishlist, wishlistIds, loading, toggle, dispatch, userId],
+    [wishlist, wishlistIds, loading, toggle, refresh],
   );
 };

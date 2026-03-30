@@ -1,4 +1,4 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice, createSelector} from '@reduxjs/toolkit';
 
 import {Product} from '@/types/product';
 import {wishlistLocalDb} from '@/services/wishlistLocalDb';
@@ -72,8 +72,9 @@ const wishlistSlice = createSlice({
 export const {clearWishlist} = wishlistSlice.actions;
 
 export const selectWishlist = (state: RootState) => state.wishlist.items;
-export const selectWishlistIds = (state: RootState) =>
-  state.wishlist.items.map(item => item.id);
+export const selectWishlistIds = createSelector(selectWishlist, items =>
+  items.map(item => item.id),
+);
 export const selectWishlistLoading = (state: RootState) =>
   state.wishlist.loading;
 
