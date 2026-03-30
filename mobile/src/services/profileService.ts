@@ -1,6 +1,6 @@
 import api from './axiosInstance';
 import {profileLocalDb} from './profileLocalDb';
-import {User} from '../models/user';
+import {User} from '../types/user';
 
 export const profileService = {
   /**

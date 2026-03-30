@@ -10,7 +10,7 @@ import {
 import {Controller, FieldErrors, Control} from 'react-hook-form';
 import DetailField from '@/components/DetailField';
 import {profileStyles as styles} from '../styles';
-import {User} from '@/models/user';
+import {User} from '@/types/user';
 
 type FormValues = {
   firstName: string;

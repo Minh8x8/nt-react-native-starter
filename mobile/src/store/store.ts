@@ -1,10 +1,13 @@
 import {configureStore, Middleware} from '@reduxjs/toolkit';
-import rootReducer, {RootState} from '../reducers/root-reducer';
 import logger from 'redux-logger';
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 
+import productReducer from './product/productSlice';
+
 const store = configureStore({
-  reducer: rootReducer,
+  reducer: {
+    product: productReducer,
+  },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       immutableCheck: false,
@@ -13,6 +16,7 @@ const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
 });
 
+export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

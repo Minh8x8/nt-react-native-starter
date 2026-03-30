@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react'; // add useCallbac
 import {SafeAreaView, ScrollView, RefreshControl} from 'react-native'; // add RefreshControl
 
 import ActionRow from '@/components/ActionRow';
-import {useAuth} from '@/contexts/auth-context';
+import {useAuth} from '@/providers/auth-provider';
 
 import AccountDetailsCard from './components/AccountDetailsCard';
 import ProfileCard from './components/ProfileCard';

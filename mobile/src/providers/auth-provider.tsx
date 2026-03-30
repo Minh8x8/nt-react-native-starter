@@ -1,6 +1,6 @@
 import {createContext, useContext, useEffect, useState} from 'react';
 import {authService} from '../services/authService';
-import {User} from '../models/user';
+import {User} from '../types/user';
 import {profileService} from '../services/profileService';
 import {profileLocalDb} from '../services/profileLocalDb';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import {SafeAreaView, Text} from 'react-native';
-import {useAuth} from '@/contexts/auth-context';
+import {useAuth} from '@/providers/auth-provider';
 
 import {useShopScreen} from './hooks/useShopScreen';
 import ShopHeader from './components/ShopHeader';

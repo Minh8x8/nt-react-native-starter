@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react';
 import {ActivityIndicator, FlatList, Text, View} from 'react-native';
 import ProductCard from '@/components/ProductCard';
-import {Product} from '@/models/product';
+import {Product} from '@/types/product';
 import {styles} from '../styles';
 
 interface ProductGridProps {

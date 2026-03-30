@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {useAuth} from '@/contexts/auth-context';
+import {useAuth} from '@/providers/auth-provider';
 import {ITextInput} from '@/types/text-input';
 
 export const useSignInForm = () => {

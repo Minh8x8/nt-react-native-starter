@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, Image, Pressable} from 'react-native';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Product} from '../models/product';
+import {Product} from '../types/product';
 import {styles} from '../screens/shop/styles';
 
 interface ProductCardProps {

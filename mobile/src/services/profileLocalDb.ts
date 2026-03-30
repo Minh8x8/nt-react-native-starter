@@ -1,5 +1,5 @@
 import SQLite from 'react-native-sqlite-storage';
-import {User} from '../models/user';
+import {User} from '../types/user';
 
 SQLite.enablePromise(true);
 

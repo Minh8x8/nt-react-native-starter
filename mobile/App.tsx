@@ -1,10 +1,10 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {SignInScreen} from './src/screens/signin-screen';
-import {AuthProvider, useAuth} from './src/contexts/auth-context';
+import {SignInScreen} from '@/screens/sign-in/signin-screen';
+import {AuthProvider, useAuth} from './src/providers/auth-provider';
 import MainNavigator from './src/screens/navigator/main-navigator';
 import {Provider} from 'react-redux';
-import store from './src/stores/store';
+import store from './src/store/store';
 import {QueryProvider} from './src/providers/QueryProvider';
 import Toast from 'react-native-toast-message';
 

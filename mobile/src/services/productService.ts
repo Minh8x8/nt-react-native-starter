@@ -1,4 +1,4 @@
-import {Product} from '../models/product';
+import {Product} from '../types/product';
 import api from './axiosInstance';
 
 export const productService = {

@@ -1,6 +1,8 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {Product} from '../models/product';
-import {fetchProducts} from '../thunks/product-thunk';
+
+import type {RootState} from '../store';
+import {Product} from '../../types/product';
+import {fetchProducts} from './productThunk';
 
 interface ProductState {
   products: Product[];
@@ -39,11 +41,8 @@ const productSlice = createSlice({
 });
 
 // Selectors
-export const selectProducts = (state: {product: ProductState}) =>
-  state.product.products;
-export const selectProductLoading = (state: {product: ProductState}) =>
-  state.product.loading;
-export const selectProductError = (state: {product: ProductState}) =>
-  state.product.error;
+export const selectProducts = (state: RootState) => state.product.products;
+export const selectProductLoading = (state: RootState) => state.product.loading;
+export const selectProductError = (state: RootState) => state.product.error;
 
 export default productSlice.reducer;
