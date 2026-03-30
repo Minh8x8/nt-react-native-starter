@@ -6,7 +6,7 @@ import {
   waitFor,
 } from '@testing-library/react-native';
 
-import {SignInScreen} from '@/screens/signin-screen';
+import {SignInScreen} from '@/screens/sign-in/signin-screen';
 import {useAuth} from '@/contexts/auth-context';
 
 jest.mock('@/contexts/auth-context', () => ({
