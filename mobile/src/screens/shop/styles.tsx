@@ -191,4 +191,21 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
+
+  centeredEmpty: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginBottom: 6,
+    color: '#111',
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#747d8c',
+  },
 });

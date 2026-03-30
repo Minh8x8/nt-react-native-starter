@@ -9,7 +9,7 @@ import {
 import {SignInScreen} from '@/screens/sign-in/signin-screen';
 import {useAuth} from '@/providers/AuthProvider';
 
-jest.mock('@/providers/auth-provider', () => ({
+jest.mock('@/providers/AuthProvider', () => ({
   useAuth: jest.fn(),
 }));
 

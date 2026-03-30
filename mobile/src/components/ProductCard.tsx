@@ -7,14 +7,16 @@ import {styles} from '../screens/shop/styles';
 
 interface ProductCardProps {
   product: Product;
+  isSaved?: boolean;
   onPressHeart?: (product: Product) => void;
   onPressAdd?: (product: Product) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
   product,
-  //onPressHeart,
-  //onPressAdd,
+  isSaved,
+  onPressHeart,
+  onPressAdd,
 }) => {
   const price = `$${product.price.toFixed(2)}`;
   const isSale = product.id % 5 === 0;
@@ -32,12 +34,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         <Pressable
           style={styles.heartButton}
-          // onPress={() => onPressHeart?.(product)}
-        >
+          onPress={() => onPressHeart?.(product)}>
           <MaterialCommunityIcons
-            name="heart-outline"
+            name={isSaved ? 'heart' : 'heart-outline'}
             size={18}
-            color="#ff4d6d"
+            color={isSaved ? '#ff4d6d' : '#ff6b81'}
           />
         </Pressable>
       </View>
@@ -52,8 +53,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
           <Pressable
             style={styles.addButton}
-            // onPress={() => onPressAdd?.(product)}
-          >
+            onPress={() => onPressAdd?.(product)}>
             <MaterialCommunityIcons name="plus" size={18} color="#fff" />
           </Pressable>
         </View>

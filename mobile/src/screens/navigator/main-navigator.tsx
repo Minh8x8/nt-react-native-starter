@@ -5,7 +5,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {ProfileScreen} from '../profile/profile-screen';
 import ShopScreen from '../shop/shop-screen';
 import CategoriesScreen from '../categories-screen';
-import SavedScreen from '../saved-screen';
+import SavedScreen from '../saved/saved-screen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {StyleSheet} from 'react-native';
 

@@ -10,6 +10,10 @@ interface ProductGridProps {
   isError: boolean;
   isRefreshing: boolean;
   onRefresh: () => void;
+  savedIds: number[];
+  onToggleWishlist: (product: Product) => void;
+  onAddToCart: (product: Product) => void;
+  numColumns?: number;
 }
 
 const ProductGrid: React.FC<ProductGridProps> = ({
@@ -18,10 +22,21 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   isError,
   isRefreshing,
   onRefresh,
+  savedIds,
+  onToggleWishlist,
+  onAddToCart,
+  numColumns = 2,
 }) => {
   const renderItem = useCallback(
-    ({item}: {item: Product}) => <ProductCard product={item} />,
-    [],
+    ({item}: {item: Product}) => (
+      <ProductCard
+        product={item}
+        isSaved={savedIds.includes(item.id)}
+        onPressHeart={onToggleWishlist}
+        onPressAdd={onAddToCart}
+      />
+    ),
+    [onAddToCart, onToggleWishlist, savedIds],
   );
 
   if (isLoading && !isRefreshing) {
@@ -41,8 +56,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({
       data={products}
       keyExtractor={item => item.id.toString()}
       renderItem={renderItem}
-      numColumns={2}
-      columnWrapperStyle={styles.columnWrapper}
+      numColumns={numColumns}
+      columnWrapperStyle={numColumns > 1 ? styles.columnWrapper : undefined}
       contentContainerStyle={styles.flatListContent}
       showsVerticalScrollIndicator={false}
       refreshing={isRefreshing}

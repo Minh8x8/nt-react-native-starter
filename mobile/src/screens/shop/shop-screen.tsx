@@ -1,6 +1,10 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {SafeAreaView, Text} from 'react-native';
+import Toast from 'react-native-toast-message';
+
 import {useAuth} from '@/providers/AuthProvider';
+import {Product} from '@/types/product';
+import {useWishlist} from '@/hooks/use-wishlist';
 
 import {useShopScreen} from './hooks/useShopScreen';
 import ShopHeader from './components/ShopHeader';
@@ -12,6 +16,7 @@ import {styles} from './styles';
 
 const ShopScreen: React.FC = () => {
   const {user} = useAuth();
+  const {wishlistIds, toggleWishlist, refresh} = useWishlist(user?.id);
   const {
     products,
     isLoading,
@@ -21,8 +26,20 @@ const ShopScreen: React.FC = () => {
     activeCategory,
     setSearchQuery,
     setActiveCategory,
-    handleRefresh,
+    handleRefresh: refreshProducts,
   } = useShopScreen();
+
+  const handleAddToCart = useCallback((product: Product) => {
+    Toast.show({
+      type: 'success',
+      text1: 'Added to cart',
+      text2: product.name,
+    });
+  }, []);
+
+  const handleRefresh = useCallback(async () => {
+    await Promise.all([refreshProducts(), refresh?.()]);
+  }, [refresh, refreshProducts]);
 
   if (!user) {
     return (
@@ -47,6 +64,9 @@ const ShopScreen: React.FC = () => {
         isError={isError}
         isRefreshing={isRefreshing}
         onRefresh={handleRefresh}
+        savedIds={wishlistIds}
+        onToggleWishlist={toggleWishlist}
+        onAddToCart={handleAddToCart}
       />
     </SafeAreaView>
   );

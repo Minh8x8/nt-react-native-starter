@@ -5,7 +5,7 @@ import ShopScreen from '@/screens/shop/shop-screen';
 import {useAuth} from '@/providers/AuthProvider';
 import {useProducts} from '@/hooks/use-products';
 
-jest.mock('@/providers/auth-provider', () => ({
+jest.mock('@/providers/AuthProvider', () => ({
   useAuth: jest.fn(),
 }));
 

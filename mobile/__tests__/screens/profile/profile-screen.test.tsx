@@ -13,7 +13,7 @@ import {profileService} from '@/services/profileService';
 import Toast from 'react-native-toast-message';
 import {RefreshControl} from 'react-native';
 
-jest.mock('@/providers/auth-provider', () => ({
+jest.mock('@/providers/AuthProvider', () => ({
   useAuth: jest.fn(),
 }));
 

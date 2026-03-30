@@ -3,10 +3,12 @@ import logger from 'redux-logger';
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 
 import productReducer from './product/productSlice';
+import wishlistReducer from './wishlist/wishlistSlice';
 
 const store = configureStore({
   reducer: {
     product: productReducer,
+    wishlist: wishlistReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
