@@ -1,9 +1,7 @@
 import {useCallback, useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
-
 import Toast from 'react-native-toast-message';
-
 import {profileSchema} from '../validations/profileSchema';
 import {profileService} from '@/services/profileService';
 import {User} from '@/models/user';
@@ -42,36 +40,26 @@ export const useProfileForm = ({
     },
   });
 
-  /**
-   * Sync form khi user thay đổi
-   */
   useEffect(() => {
-    if (!user) {
+    if (!user || isEditing) {
       return;
     }
-
     reset({
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
       age: user.age ?? 0,
     });
-
     setProfile(user);
-  }, [user, reset]);
+  }, [user, reset, isEditing]);
 
-  /**
-   * Load profile từ SQLite + API
-   */
   const loadProfile = useCallback(async () => {
     setLoadingProfile(true);
-
     try {
       const cached = await profileService.getLocalProfile();
       if (cached) {
         setProfile(cached);
         setUserProfile?.(cached);
       }
-
       const fresh = await profileService.getProfile();
       setProfile(fresh);
       setUserProfile?.(fresh);
@@ -82,34 +70,25 @@ export const useProfileForm = ({
     }
   }, [setUserProfile]);
 
-  /**
-   * Save profile
-   */
   const onSave = handleSubmit(async values => {
     if (savingProfile) {
       return;
     }
-
     setSavingProfile(true);
-
     try {
       const updated = await profileService.updateProfile({
-        firstName: values.firstName.trim(),
-        lastName: values.lastName.trim(),
-        age: Number(values.age),
+        firstName: values.firstName,
+        lastName: values.lastName,
+        age: values.age,
       });
-
       setProfile(updated);
       setUserProfile?.(updated);
-
       reset({
         firstName: updated.firstName ?? '',
         lastName: updated.lastName ?? '',
         age: updated.age ?? 0,
       });
-
       setIsEditing(false);
-
       Toast.show({
         type: 'success',
         text1: 'Profile updated',
@@ -118,27 +97,18 @@ export const useProfileForm = ({
     } catch (error: any) {
       const message =
         error?.response?.data?.message ?? 'Failed to update profile';
-
-      Toast.show({
-        type: 'error',
-        text1: 'Update failed',
-        text2: message,
-      });
+      Toast.show({type: 'error', text1: 'Update failed', text2: message});
     } finally {
       setSavingProfile(false);
     }
   });
 
-  /**
-   * Cancel edit
-   */
   const onCancel = () => {
     reset({
       firstName: profile?.firstName ?? '',
       lastName: profile?.lastName ?? '',
       age: profile?.age ?? 0,
     });
-
     setIsEditing(false);
   };
 
@@ -147,10 +117,8 @@ export const useProfileForm = ({
     isEditing,
     savingProfile,
     loadingProfile,
-
     control,
     errors,
-
     setIsEditing,
     onSave,
     onCancel,

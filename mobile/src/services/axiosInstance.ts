@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import env from '../config/env';
+import * as Keychain from 'react-native-keychain';
 import {authService} from './authService';
 
 const api = axios.create({
@@ -52,8 +53,8 @@ api.interceptors.response.use(
     }
     if (status === 401) {
       // Token hết hạn → xóa token, về màn Login
-      await AsyncStorage.removeItem('access_token');
-      // navigate về Login ở đây nếu cần (xem ghi chú bên dưới)
+      await Keychain.resetGenericPassword();
+      await AsyncStorage.removeItem('user');
     }
 
     if (status === 403) {

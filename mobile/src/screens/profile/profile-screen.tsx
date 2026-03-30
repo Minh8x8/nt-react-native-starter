@@ -11,6 +11,7 @@ import ProfileHeader from './components/ProfileHeader';
 import {profileStyles as styles} from './styles';
 
 import {useProfileForm} from './hooks/useProfileForm';
+import Toast from 'react-native-toast-message';
 
 interface ProfileScreenProps {
   navigation: any;
@@ -61,6 +62,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({navigation}) => {
     try {
       setLoggingOut(true);
       await logout?.();
+    } catch {
+      Toast.show({
+        type: 'error',
+        text1: 'Logout failed',
+        text2: 'Please try again.',
+      });
     } finally {
       setLoggingOut(false);
     }
